@@ -18,7 +18,7 @@ NROW=6
 
 TWalk=2
 TFollow=2
-TLug=8
+TLug=12
 TWait=6
 TRow=2
 TInt=3
@@ -36,6 +36,7 @@ def Checkorder(order):
     Output[NROW1+1:,:]=Matorder[NROW1:,:]
     plt.matshow(Output.T,cmap="YlOrBr")
     plt.colorbar()
+    plt.show()
 #    plt.matshow(Matorder,cmap="YlOrBr")
 #    plt.colorbar()
 #    plt.show()
@@ -149,18 +150,34 @@ def neighbour(order):
     order2[u2]=order[u1]
     return order2
 
+def randomize(o):
+    N=len(o)
+    order=np.copy(o)
+    for i in range(N):
+        j=randint(1,N)
+        temp=order[j-1]
+        order[j-1]=order[i-1]
+        order[i-1]=temp
+    order=np.ravel(np.matrix(order,int))
+    return order
+
 def Byrow():
     N=NCOL*NROW
     order=np.flip(np.linspace(1,N,N))
+    for i in range(NCOL):
+        order[i*NROW:(i+1)*NROW]=randomize(order[i*NROW:(i+1)*NROW])
     order=np.ravel(np.matrix(order,int))
     return order
     
 def Byhalfrow():
     N=NCOL*6
+    ROW=int(NROW/2)
     order=np.zeros(N)
     for i in range(NCOL):
         order[i*3:i*3+3]=np.linspace(i*6+1,i*6+3,3)
     order[(NCOL)*3:]=order[:(NCOL)*3]+3
+    for i in range(NCOL*2):
+        order[i*ROW:(i+1)*ROW]=randomize(order[i*ROW:(i+1)*ROW])
     order=np.ravel(np.matrix(order,int))
     return np.flip(order)
 
@@ -191,6 +208,8 @@ def Outsidein():
 #    order[3*NCOL:4*NCOL]=order[:NCOL]+4
 #    order[4*NCOL:5*NCOL]=order[:NCOL]+2
 #    order[5*NCOL:6*NCOL]=order[:NCOL]+3
+    for i in range(int(NROW/2)):
+        order[2*i*NCOL:2*(i+1)*NCOL]=randomize(order[2*i*NCOL:2*(i+1)*NCOL])
     order=np.ravel(np.matrix(order,int))
     return order
 
@@ -208,6 +227,8 @@ def Backtofront():
     order[5*COL:6*COL]=order[:COL]+3
     for j in range(3):
         order[(j+1)*6*COL:(j+2)*6*COL]=COL*6*(j+1)+order[:6*COL]
+    for i in range(4):
+        order[6*i*COL:6*(i+1)*COL]=randomize(order[6*i*COL:6*(i+1)*COL])
     order=np.ravel(np.matrix(order,int))
     return np.flip(order)
 
@@ -272,16 +293,33 @@ def Metropolis(funcorder,nT,h):
     print(TotalBoardingTime(ordermin))
     return ordermin
 
+
+
+print("==============================================================")
+print("Outside-in boarding :")
+r=Outsidein()
+Checkorder(r)
+print("Estimated boarding time:",TotalBoardingTime(r))
+print("==============================================================")
+print("Random boarding :")
+r=randomorder()
+Checkorder(r)
+print("Estimated boarding time:",TotalBoardingTime(r))
+print("==============================================================")
+print("Boarding by row :")
+r=Byrow()
+Checkorder(r)
+print("Estimated boarding time:",TotalBoardingTime(r))
+print("==============================================================")
+print("Boarding by half row :")
 r=Byhalfrow()
 Checkorder(r)
-print(TotalBoardingTime(r))
-#print(r)
-#r=randomorder()
-#Checkorder(r)
-#print(TotalBoardingTime(r))
-#r=Byrow()
-#Checkorder(r)
-#print(TotalBoardingTime(r))
+print("Estimated boarding time:",TotalBoardingTime(r))
+print("==============================================================")
+print("Back to front boarding :")
+r=Backtofront()
+Checkorder(r)
+print("Estimated boarding time:",TotalBoardingTime(r))
 
 #print(Calculh())
 #N=50000
