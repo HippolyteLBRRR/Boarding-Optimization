@@ -16,7 +16,7 @@ import Model
 def Find_coeff(order,P,NCOL,NROW1,NROW2,NROW,Time):
     N=len(order)
     err=np.zeros(N)
-    h=3
+    h=10
     for i in range(N):
         err[i]=Model.TotalBoardingTime(order[i],P[i],NCOL[i],NROW1[i],NROW2[i],NROW[i])/60-Time[i]
     print(Norme(err))
@@ -59,6 +59,14 @@ def voisin(TWalk,TFollow,TLug,TWait,TRow,TInt):
     TRow2=np.maximum(TRow+0.1*(random()-0.5),0)
     TInt2=np.maximum(TInt+0.1*(random()-0.5),0)
     return TWalk2,TFollow2,TLug2,TWait2,TRow2,TInt2
+
+def Errmoy(order,P,NCOL,NROW1,NROW2,NROW,Time):
+    N=len(order)
+    err=np.zeros(N)
+    for i in range(N):
+#        print(i)
+        err[i]=Model.TotalBoardingTime(order[i],P[i],NCOL[i],NROW1[i],NROW2[i],NROW[i])/60-Time[i]
+    return np.sum(np.abs(err))/N
 
 def Norme(err):
     return np.sqrt(np.sum(err**2))

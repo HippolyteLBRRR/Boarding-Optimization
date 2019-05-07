@@ -24,12 +24,19 @@ TWait=8
 TRow=2
 TInt=2
 
-#TWalk=80
-#TFollow=40
-#TLug=60
-#TWait=45
-#TRow=6
-#TInt=7
+TWalk=3
+TFollow=24.5
+TLug=19
+TWait=6
+TRow=2
+TInt=2
+
+TWalk=1
+TFollow=23.5
+TLug=23
+TWait=7
+TRow=2
+TInt=2
 ##Checkorder displays a graph based on the order which is the parameter.
 ##Good way to visualize how the boarding occurs
 def Checkorder(order,NCOL,NROW1,NROW2,NROW):

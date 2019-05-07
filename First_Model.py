@@ -12,7 +12,7 @@ import math
 import scipy.stats
 from random import randint
 
-NCOL=4
+NCOL=16
 NROW=6
 
 
@@ -26,12 +26,19 @@ TInt=3
 def Checkorder(order):
     n=len(order)
     Vecorder=np.zeros(n)
+    NROW1=int(NROW/2)
     for i in range(n):
         Vecorder[order[i]-1]=i+1
+#    Matorder=np.reshape(Vecorder,[NCOL,NROW]).T
     Matorder=np.reshape(Vecorder,[NCOL,NROW]).T
-    plt.matshow(Matorder,cmap="YlOrBr")
+    Output=np.zeros([NROW+1,NCOL])
+    Output[:NROW1,:]=Matorder[:NROW1,:]
+    Output[NROW1+1:,:]=Matorder[NROW1:,:]
+    plt.matshow(Output.T,cmap="YlOrBr")
     plt.colorbar()
-    plt.show()
+#    plt.matshow(Matorder,cmap="YlOrBr")
+#    plt.colorbar()
+#    plt.show()
     pass
 
 def randomorder():
@@ -265,10 +272,10 @@ def Metropolis(funcorder,nT,h):
     print(TotalBoardingTime(ordermin))
     return ordermin
 
-r=Outsidein()
+r=Byhalfrow()
 Checkorder(r)
 print(TotalBoardingTime(r))
-print(r)
+#print(r)
 #r=randomorder()
 #Checkorder(r)
 #print(TotalBoardingTime(r))
