@@ -295,31 +295,140 @@ def Metropolis(funcorder,nT,h):
 
 
 
-print("==============================================================")
-print("Outside-in boarding :")
-r=Outsidein()
-Checkorder(r)
-print("Estimated boarding time:",TotalBoardingTime(r))
-print("==============================================================")
-print("Random boarding :")
-r=randomorder()
-Checkorder(r)
-print("Estimated boarding time:",TotalBoardingTime(r))
-print("==============================================================")
-print("Boarding by row :")
-r=Byrow()
-Checkorder(r)
-print("Estimated boarding time:",TotalBoardingTime(r))
-print("==============================================================")
-print("Boarding by half row :")
-r=Byhalfrow()
-Checkorder(r)
-print("Estimated boarding time:",TotalBoardingTime(r))
-print("==============================================================")
-print("Back to front boarding :")
-r=Backtofront()
-Checkorder(r)
-print("Estimated boarding time:",TotalBoardingTime(r))
+#print("==============================================================")
+#print("Outside-in boarding :")
+#r=Outsidein()
+#Checkorder(r)
+#print("Estimated boarding time:",TotalBoardingTime(r))
+#print("==============================================================")
+#print("Random boarding :")
+#r=randomorder()
+#Checkorder(r)
+#print("Estimated boarding time:",TotalBoardingTime(r))
+#print("==============================================================")
+#print("Boarding by row :")
+#r=Byrow()
+#Checkorder(r)
+#print("Estimated boarding time:",TotalBoardingTime(r))
+#print("==============================================================")
+#print("Boarding by half row :")
+#r=Byhalfrow()
+#Checkorder(r)
+#print("Estimated boarding time:",TotalBoardingTime(r))
+#print("==============================================================")
+#print("Back to front boarding :")
+#r=Backtofront()
+#Checkorder(r)
+#print("Estimated boarding time:",TotalBoardingTime(r))
+
+#N=1000
+##TL=[2,8,14,20]
+#TW=np.linspace(0,20,10)
+#J=len(TW)
+#TOI=np.zeros(J)
+#TR=np.zeros(J)
+#TBTF=np.zeros(J)
+#TBR=np.zeros(J)
+#TBHR=np.zeros(J)
+#for j in range(J):
+#    TWait=TW[j]
+#    TimeOI=0
+#    TimeRandom=0
+#    TimeBtF=0
+#    TimeBR=0
+#    TimeBHR=0
+#    for i in range(N):
+#        r=Outsidein()
+#        TimeOI+=TotalBoardingTime(r)
+#        r=randomorder()
+#        TimeRandom+=TotalBoardingTime(r)
+#        r=Backtofront()
+#        TimeBtF+=TotalBoardingTime(r)
+#        r=Byrow()
+#        TimeBR+=TotalBoardingTime(r)
+#        r=Byhalfrow()
+#        TimeBHR+=TotalBoardingTime(r)
+#    TimeOI=TimeOI/N
+#    TimeRandom=TimeRandom/N
+#    TimeBtF=TimeBtF/N
+#    TimeBR=TimeBR/N
+#    TimeBHR=TimeBHR/N
+#    print("==========================================")
+#    print("Tlug =",TLug)
+#    print("Temps moyen Outside in :",TimeOI)
+#    print("Temps moyen random :",TimeRandom)
+#    print("Temps moyen Back to Front :",TimeBtF)
+#    print("Temps moyen By row:",TimeBR)
+#    print("Temps moyen By half row :",TimeBHR)
+#    TOI[j]=TimeOI
+#    TR[j]=TimeRandom
+#    TBTF[j]=TimeBtF
+#    TBR[j]=TimeBR
+#    TBHR[j]=TimeBHR
+#    
+#plt.plot(TW,TOI)
+#plt.plot(TW,TR)
+#plt.plot(TW,TBTF)
+#plt.plot(TW,TBR)
+#plt.plot(TW,TBHR)
+#plt.legend(["Outside-in","Random","Back to front","By row","By half row"])
+#plt.show()
+
+N=1000
+#TL=[2,8,14,20]
+TL=np.linspace(0,30,10)
+J=len(TL)
+TOI=np.zeros(J)
+TR=np.zeros(J)
+TBTF=np.zeros(J)
+TBR=np.zeros(J)
+TBHR=np.zeros(J)
+for j in range(J):
+    TWalk=TL[j]
+    TimeOI=0
+    TimeRandom=0
+    TimeBtF=0
+    TimeBR=0
+    TimeBHR=0
+    for i in range(N):
+        r=Outsidein()
+        TimeOI+=TotalBoardingTime(r)
+        r=randomorder()
+        TimeRandom+=TotalBoardingTime(r)
+        r=Backtofront()
+        TimeBtF+=TotalBoardingTime(r)
+        r=Byrow()
+        TimeBR+=TotalBoardingTime(r)
+        r=Byhalfrow()
+        TimeBHR+=TotalBoardingTime(r)
+    TimeOI=TimeOI/N
+    TimeRandom=TimeRandom/N
+    TimeBtF=TimeBtF/N
+    TimeBR=TimeBR/N
+    TimeBHR=TimeBHR/N
+    print("==========================================")
+    print("Tlug =",TLug)
+    print("Temps moyen Outside in :",TimeOI)
+    print("Temps moyen random :",TimeRandom)
+    print("Temps moyen Back to Front :",TimeBtF)
+    print("Temps moyen By row:",TimeBR)
+    print("Temps moyen By half row :",TimeBHR)
+    TOI[j]=TimeOI
+    TR[j]=TimeRandom
+    TBTF[j]=TimeBtF
+    TBR[j]=TimeBR
+    TBHR[j]=TimeBHR
+    
+plt.plot(TL,TOI)
+plt.plot(TL,TR)
+plt.plot(TL,TBTF)
+plt.plot(TL,TBR)
+plt.plot(TL,TBHR)
+plt.legend(["Outside-in","Random","Back to front","By row","By half row"])
+plt.show()
+
+
+
 
 #print(Calculh())
 #N=50000
