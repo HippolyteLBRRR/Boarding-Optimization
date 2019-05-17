@@ -14,11 +14,7 @@ import Model
 import Coeffs
 
 
-wb = xlrd.open_workbook('Boarding_par_vol.xlsx')
-sh=wb.sheet_by_name('Rapport 1')
-d,f=Rush.find_rush(sh)
-
-def Data_translater(file_name,sheet_name,display = True):
+def Data_translater(file_name,sheet_name,weight,display):
     wb = xlrd.open_workbook(file_name)
     sh=wb.sheet_by_name(sheet_name)
     d,f=Rush.find_rush(sh)
@@ -54,6 +50,10 @@ def Data_translater(file_name,sheet_name,display = True):
     [NC6,NR16,NR26,NR6]=[14,2,3,5]
     for rownum in range(sh.nrows):
 #        print(rownum)
+        if (rownum==d):
+            DEB=sh.row_values(rownum)[1]
+        if (rownum<=f):
+            FIN=sh.row_values(rownum)[1]
         col=(ord(sh.row_values(rownum)[3][0])-48)*10+ord(sh.row_values(rownum)[3][1])-48
         row=ord(sh.row_values(rownum)[3][2])-65
         if (col>9) and (col<28) and (row<6):
@@ -110,7 +110,8 @@ def Data_translater(file_name,sheet_name,display = True):
                     deb6=sh.row_values(rownum)[1]
                 order6+=[p]
                 fin6=sh.row_values(rownum)[1]
-
+    BTime=FIN-DEB
+    
     if display == True :
         print("=============================================")
         print("                  BLOC 1")
@@ -154,33 +155,78 @@ def Data_translater(file_name,sheet_name,display = True):
         BT6=Model.TotalBoardingTime(order6,P6,NC6,NR16,NR26,NR6)
         print("Temps calculé :",BT6/60)
         print("Temps réel :",fin6-deb6)
+        print("=============================================")
+        print("Temps total d'embarquement :",BTime)
+        if (np.sum(weight)==0):
+            weight[np.argmax([BT1/60,BT2/60,BT3/60,BT4/60,BT5/60,BT6/60])]=1
+        print("Temps total d'embarquement calculé :",np.dot([BT1/60,BT2/60,BT3/60,BT4/60,BT5/60,BT6/60],weight))
     ORDER=[order1,order2,order3,order4,order5,order6]
     P=[P1,P2,P3,P4,P5,P6]
-    Time=[fin1-deb1,fin2-deb2,fin3-deb3,fin4-deb4,fin5-deb5,fin6-deb6]
     NC=[18,18,15,15,14,14]
     NR1=[3,2,3,2,3,2]
     NR2=[2,3,2,3,2,3]
     NR=[5,5,5,5,5,5]
-    return ORDER,P,NC,NR1,NR2,NR,Time
+    Time=[fin1-deb1,fin2-deb2,fin3-deb3,fin4-deb4,fin5-deb5,fin6-deb6]
+    return ORDER,P,NC,NR1,NR2,NR,Time,BTime
+
+def weight_finder():
+    Time,BTime=Data_translater('Boarding.xlsx','Vol n°1',np.zeros(6),False)[-2:]
+    BTime=[BTime]
+    Time=np.matrix(Time)
+    k=0
+    for i in range(2,87):
+        if (i!=18 and i!=3 and i!=6 and i!=7 and i!=10 and i!=11 and i!=14 and i!=15 and i!=19 and i!=21 and i!=23 and i!=27 and i!=30 and i!=31 and i!=33 and i!=35 and i!=39 and i!=43 and i!=47 and i!=51 and i!=55 and i!=57 and i!=59 and i!=60 and i!=63 and i!=67 and i!=71 and i!=73 and i!=75 and i!=79 and i!=83 and i!=86):
+            Time_temp,BTime_temp=Data_translater('Boarding.xlsx','Vol n°'+str(i),np.zeros(6),False)[-2:]
+            Time=np.concatenate((Time,np.matrix(Time_temp)),axis=0)
+            BTime+=[BTime_temp]
+            k+=1
+    w=np.linalg.solve(np.dot(Time.T,Time),np.ravel(np.dot(Time.T,BTime)))
+    print(k)
+    return w
+
+ORDER,P,NC,NR1,NR2,NR,Time,BTime=Data_translater('Boarding.xlsx','Vol n°38',np.zeros(6),display=True)
 #
-k=0
-ORDER,P,NC,NR1,NR2,NR,Time=Data_translater('Boarding_par_vol.xlsx','Rapport 1',False)
-for i in range(1,87):
-    if (i!=18 and i!=3 and i!=6 and i!=7 and i!=10 and i!=11 and i!=14 and i!=15 and i!=19 and i!=21 and i!=23 and i!=27 and i!=30 and i!=31 and i!=33 and i!=35 and i!=39 and i!=43 and i!=47 and i!=51 and i!=55 and i!=57 and i!=59 and i!=60 and i!=63 and i!=67 and i!=71 and i!=73 and i!=75 and i!=79 and i!=83 and i!=86):
-        k+=1
-        ORDER_temp,P_temp,NC_temp,NR1_temp,NR2_temp,NR_temp,Time_temp=Data_translater('Boarding.xlsx','Vol n°'+str(i),False)
-        ORDER+=ORDER_temp
-        P+=P_temp
-        NC+=NC_temp
-        NR1+=NR1_temp
-        NR2+=NR2_temp
-        NR+=NR_temp
-        Time+=Time_temp
+#w=weight_finder()
+#k=0
+#ORDER,P,NC,NR1,NR2,NR,Time,BTime=Data_translater('Boarding.xlsx','Vol n°1',None,display=False)
+#BTime=[BTime]
+#for i in range(2,87):
+#    if (i!=18 and i!=3 and i!=6 and i!=7 and i!=10 and i!=11 and i!=14 and i!=15 and i!=19 and i!=21 and i!=23 and i!=27 and i!=30 and i!=31 and i!=33 and i!=35 and i!=39 and i!=43 and i!=47 and i!=51 and i!=55 and i!=57 and i!=59 and i!=60 and i!=63 and i!=67 and i!=71 and i!=73 and i!=75 and i!=79 and i!=83 and i!=86):
+#        k+=1
+#        ORDER_temp,P_temp,NC_temp,NR1_temp,NR2_temp,NR_temp,Time_temp,BTime_temp=Data_translater('Boarding.xlsx','Vol n°'+str(i),None,display=False)
+#        ORDER+=ORDER_temp
+#        P+=P_temp
+#        NC+=NC_temp
+#        NR1+=NR1_temp
+#        NR2+=NR2_temp
+#        NR+=NR_temp
+#        BTime+=[BTime_temp]
+#        Time+=Time_temp
+#Em=Coeffs.ErrBoarding(ORDER,P,NC,NR1,NR2,NR,Time,BTime,np.zeros(6))
+#print("Erreur moyenne sur l'embarquement méthode max :",np.sum(Em)/len(Em))
+#ELS=Coeffs.ErrBoarding(ORDER,P,NC,NR1,NR2,NR,Time,BTime,w)
+#print("Erreur moyenne sur l'embarquement méthode moindres carrés :",np.sum(ELS)/len(ELS))
+
+#k=0
+#ORDER,P,NC,NR1,NR2,NR,Time,BTime=Data_translater('Boarding_par_vol.xlsx','Rapport 1',w,display=True)
+#for i in range(1,87):
+#    if (i!=18 and i!=3 and i!=6 and i!=7 and i!=10 and i!=11 and i!=14 and i!=15 and i!=19 and i!=21 and i!=23 and i!=27 and i!=30 and i!=31 and i!=33 and i!=35 and i!=39 and i!=43 and i!=47 and i!=51 and i!=55 and i!=57 and i!=59 and i!=60 and i!=63 and i!=67 and i!=71 and i!=73 and i!=75 and i!=79 and i!=83 and i!=86):
+#        k+=1
+#        ORDER_temp,P_temp,NC_temp,NR1_temp,NR2_temp,NR_temp,Time_temp,BTime_temp=Data_translater('Boarding.xlsx','Vol n°'+str(i),w,display=False)
+#        ORDER+=ORDER_temp
+#        P+=P_temp
+#        NC+=NC_temp
+#        NR1+=NR1_temp
+#        NR2+=NR2_temp
+#        NR+=NR_temp
+#        Time+=Time_temp
+#print(Coeffs.Errmoy(ORDER,P,NC,NR1,NR2,NR,Time))
+
 #        ORDER,P,NC,NR1,NR2,NR,Time=Data_translater('Boarding.xlsx','Vol n°'+str(i),False)
 #        print(Coeffs.Errmoy(ORDER,P,NC,NR1,NR2,NR,Time))
 
 #Coeffs.Find_coeff(ORDER,P,NC,NR1,NR2,NR,Time)
-print(Coeffs.Errmoy(ORDER,P,NC,NR1,NR2,NR,Time))
+#print(Coeffs.Errmoy(ORDER,P,NC,NR1,NR2,NR,Time))
 #Coeffs.Find_coeff([order6],[P6],[NC6],[NR16],[NR26],[NR6],[fin6-deb6])
 #o=Model.Metropolis(order2,P2,NC2,NR12,NR22,NR2,10000,40)
 #order2=[]

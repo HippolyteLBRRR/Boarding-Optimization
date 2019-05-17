@@ -42,6 +42,23 @@ def Checkorder(order):
 #    plt.show()
     pass
 
+#def Zbeul(order):
+#    n=len(order)
+#    Vecorder=np.zeros(n)
+#    NROW1=int(NROW/2)
+#    for i in range(n):
+#        Vecorder[order[i]-1]=i+1
+##    Matorder=np.reshape(Vecorder,[NCOL,NROW]).T
+#    Matorder=np.reshape(Vecorder,[NCOL,NROW]).T
+#    Matorder=np.floor((Matorder-1)/4)
+#    Output=np.zeros([NROW+1,NCOL])
+#    Output[:NROW1,:]=Matorder[:NROW1,:]
+#    Output[NROW1+1:,:]=Matorder[NROW1:,:]
+#    plt.matshow(Output.T,cmap="YlOrBr")
+#    plt.colorbar()
+#    plt.show()
+#    pass
+
 def randomorder():
     N=NCOL*NROW
     order=np.linspace(1,N,N).tolist()
@@ -182,18 +199,6 @@ def Byhalfrow():
     return np.flip(order)
 
 def Outsidein():
-#    N=NCOL*6
-#    order=np.zeros(N)
-#    for i in range(NCOL):
-#        order[i]=i*6+1
-#    order[:NCOL]=np.flip(order[:NCOL])
-#    order[NCOL:2*NCOL]=order[:NCOL]+5
-#    order[2*NCOL:3*NCOL]=order[:NCOL]+1
-#    order[3*NCOL:4*NCOL]=order[:NCOL]+4
-#    order[4*NCOL:5*NCOL]=order[:NCOL]+2
-#    order[5*NCOL:6*NCOL]=order[:NCOL]+3
-#    order=np.ravel(np.matrix(order,int))
-    
     N=NCOL*NROW
     order=np.zeros(N)
     for i in range(NCOL):
@@ -203,13 +208,21 @@ def Outsidein():
         if (j!=0):
             order[(2*j)*NCOL:(2*j+1)*NCOL]=order[:NCOL]+j
         order[(2*j+1)*NCOL:(2*j+2)*NCOL]=order[:NCOL]+NROW-1-j
-#    order[NCOL:2*NCOL]=order[:NCOL]+5
-#    order[2*NCOL:3*NCOL]=order[:NCOL]+1
-#    order[3*NCOL:4*NCOL]=order[:NCOL]+4
-#    order[4*NCOL:5*NCOL]=order[:NCOL]+2
-#    order[5*NCOL:6*NCOL]=order[:NCOL]+3
     for i in range(int(NROW/2)):
         order[2*i*NCOL:2*(i+1)*NCOL]=randomize(order[2*i*NCOL:2*(i+1)*NCOL])
+    order=np.ravel(np.matrix(order,int))
+    return order
+
+def Optimal():
+    N=NCOL*NROW
+    order=np.zeros(N)
+    for i in range(NCOL):
+        order[i]=i*NROW+1
+    order[:NCOL]=np.flip(order[:NCOL])
+    for j in range(int(NROW/2)):
+        if (j!=0):
+            order[(2*j)*NCOL:(2*j+1)*NCOL]=order[:NCOL]+j
+        order[(2*j+1)*NCOL:(2*j+2)*NCOL]=order[:NCOL]+NROW-1-j
     order=np.ravel(np.matrix(order,int))
     return order
 
@@ -293,8 +306,10 @@ def Metropolis(funcorder,nT,h):
     print(TotalBoardingTime(ordermin))
     return ordermin
 
-
-
+#N=150000
+#F=np.zeros(N-1)
+#o=Metropolis(randomorder,N,Calculh()/10)
+#plt.plot(F)
 #print("==============================================================")
 #print("Outside-in boarding :")
 #r=Outsidein()
@@ -320,18 +335,92 @@ def Metropolis(funcorder,nT,h):
 #r=Backtofront()
 #Checkorder(r)
 #print("Estimated boarding time:",TotalBoardingTime(r))
+#print("==============================================================")
+#print("Optimal boarding :")
+#r=Optimal()
+#Checkorder(r)
+#print("Estimated boarding time:",TotalBoardingTime(r))
+
+
+N=1000
+#TL=[2,8,14,20]
+TW=np.linspace(1,10,6)
+J=len(TW)
+TOI=np.zeros(J)
+TR=np.zeros(J)
+TBTF=np.zeros(J)
+TBR=np.zeros(J)
+TBHR=np.zeros(J)
+#TO=np.zeros(J)
+for j in range(J):
+    TWalk=TW[j]
+    TimeOI=0
+    TimeRandom=0
+    TimeBtF=0
+    TimeBR=0
+#    TimeO=0
+    TimeBHR=0
+    for i in range(N):
+        r=Outsidein()
+        TimeOI+=TotalBoardingTime(r)
+        r=randomorder()
+        TimeRandom+=TotalBoardingTime(r)
+        r=Backtofront()
+        TimeBtF+=TotalBoardingTime(r)
+        r=Byrow()
+        TimeBR+=TotalBoardingTime(r)
+        r=Byhalfrow()
+        TimeBHR+=TotalBoardingTime(r)
+#        r=Optimal()
+#        TimeO+=TotalBoardingTime(r)
+    TimeOI=TimeOI/N
+    TimeRandom=TimeRandom/N
+    TimeBtF=TimeBtF/N
+    TimeBR=TimeBR/N
+    TimeBHR=TimeBHR/N
+#    TimeO=TimeO/N
+    print("==========================================")
+    print("TWait =",TWait)
+    print("Temps moyen Outside in :",TimeOI)
+    print("Temps moyen random :",TimeRandom)
+    print("Temps moyen Back to Front :",TimeBtF)
+    print("Temps moyen By row:",TimeBR)
+    print("Temps moyen By half row :",TimeBHR)
+#    print("Temps moyen Optimal :",TimeO)
+    TOI[j]=TimeOI
+    TR[j]=TimeRandom
+    TBTF[j]=TimeBtF
+    TBR[j]=TimeBR
+    TBHR[j]=TimeBHR
+#    TO[j]=TimeO
+    
+plt.plot(TW,TOI)
+plt.plot(TW,TR)
+plt.plot(TW,TBTF)
+plt.plot(TW,TBR)
+plt.plot(TW,TBHR)
+#plt.plot(TW,TO)
+plt.legend(["Outside-in","Random","Back to front","By row","By half row"])
+plt.xlabel("TWalk")
+plt.ylabel("Average boarding time")
+plt.show()
+
+
+#plt.bar(np.linspace(0,4,5),[TOI[6],TR[6],TBTF[6],TBR[6],TBHR[6]],tick_label=["Outside-in","Random","Back to front","By row","By half row"])
+#plt.ylabel("Average boarding time")
+
 
 #N=1000
 ##TL=[2,8,14,20]
-#TW=np.linspace(0,20,10)
-#J=len(TW)
+#TL=np.linspace(0,10,15)
+#J=len(TL)
 #TOI=np.zeros(J)
 #TR=np.zeros(J)
 #TBTF=np.zeros(J)
 #TBR=np.zeros(J)
 #TBHR=np.zeros(J)
 #for j in range(J):
-#    TWait=TW[j]
+#    TLug=TL[j]
 #    TimeOI=0
 #    TimeRandom=0
 #    TimeBtF=0
@@ -366,69 +455,71 @@ def Metropolis(funcorder,nT,h):
 #    TBR[j]=TimeBR
 #    TBHR[j]=TimeBHR
 #    
+#plt.plot(TL,TOI)
+#plt.plot(TL,TR)
+#plt.plot(TL,TBTF)
+#plt.plot(TL,TBR)
+#plt.plot(TL,TBHR)
+#plt.legend(["Outside-in","Random","Back to front","By row","By half row"])
+#plt.xlabel("TLug")
+#plt.ylabel("Average boarding time")
+#plt.show()
+
+
+#N=200
+##TL=[2,8,14,20]
+#TW=np.linspace(0,40,15)
+#J=len(TW)
+#TOI=np.zeros(J)
+#TR=np.zeros(J)
+#TBTF=np.zeros(J)
+#TBR=np.zeros(J)
+#TBHR=np.zeros(J)
+#for j in range(J):
+#    TWait=TW[j]
+#    TimeOI=0
+#    TimeRandom=0
+#    TimeBtF=0
+#    TimeBR=0
+#    TimeBHR=0
+#    for i in range(N):
+#        r=Outsidein()
+#        TimeOI+=TotalBoardingTime(r)
+#        r=randomorder()
+#        TimeRandom+=TotalBoardingTime(r)
+#        r=Backtofront()
+#        TimeBtF+=TotalBoardingTime(r)
+#        r=Byrow()
+#        TimeBR+=TotalBoardingTime(r)
+#        r=Byhalfrow()
+#        TimeBHR+=TotalBoardingTime(r)
+#    TimeOI=TimeOI/N
+#    TimeRandom=TimeRandom/N
+#    TimeBtF=TimeBtF/N
+#    TimeBR=TimeBR/N
+#    TimeBHR=TimeBHR/N
+#    print("==========================================")
+#    print("TWait =",TWait)
+#    print("Temps moyen Outside in :",TimeOI)
+#    print("Temps moyen random :",TimeRandom)
+#    print("Temps moyen Back to Front :",TimeBtF)
+#    print("Temps moyen By row:",TimeBR)
+#    print("Temps moyen By half row :",TimeBHR)
+#    TOI[j]=TimeOI
+#    TR[j]=TimeRandom
+#    TBTF[j]=TimeBtF
+#    TBR[j]=TimeBR
+#    TBHR[j]=TimeBHR
+#    
 #plt.plot(TW,TOI)
 #plt.plot(TW,TR)
 #plt.plot(TW,TBTF)
 #plt.plot(TW,TBR)
 #plt.plot(TW,TBHR)
 #plt.legend(["Outside-in","Random","Back to front","By row","By half row"])
+#plt.xlabel("TWait")
+#plt.ylabel("Average boarding time")
 #plt.show()
-
-N=1000
-#TL=[2,8,14,20]
-TL=np.linspace(0,30,10)
-J=len(TL)
-TOI=np.zeros(J)
-TR=np.zeros(J)
-TBTF=np.zeros(J)
-TBR=np.zeros(J)
-TBHR=np.zeros(J)
-for j in range(J):
-    TWalk=TL[j]
-    TimeOI=0
-    TimeRandom=0
-    TimeBtF=0
-    TimeBR=0
-    TimeBHR=0
-    for i in range(N):
-        r=Outsidein()
-        TimeOI+=TotalBoardingTime(r)
-        r=randomorder()
-        TimeRandom+=TotalBoardingTime(r)
-        r=Backtofront()
-        TimeBtF+=TotalBoardingTime(r)
-        r=Byrow()
-        TimeBR+=TotalBoardingTime(r)
-        r=Byhalfrow()
-        TimeBHR+=TotalBoardingTime(r)
-    TimeOI=TimeOI/N
-    TimeRandom=TimeRandom/N
-    TimeBtF=TimeBtF/N
-    TimeBR=TimeBR/N
-    TimeBHR=TimeBHR/N
-    print("==========================================")
-    print("Tlug =",TLug)
-    print("Temps moyen Outside in :",TimeOI)
-    print("Temps moyen random :",TimeRandom)
-    print("Temps moyen Back to Front :",TimeBtF)
-    print("Temps moyen By row:",TimeBR)
-    print("Temps moyen By half row :",TimeBHR)
-    TOI[j]=TimeOI
-    TR[j]=TimeRandom
-    TBTF[j]=TimeBtF
-    TBR[j]=TimeBR
-    TBHR[j]=TimeBHR
-    
-plt.plot(TL,TOI)
-plt.plot(TL,TR)
-plt.plot(TL,TBTF)
-plt.plot(TL,TBR)
-plt.plot(TL,TBHR)
-plt.legend(["Outside-in","Random","Back to front","By row","By half row"])
-plt.show()
-
-
-
 
 #print(Calculh())
 #N=50000

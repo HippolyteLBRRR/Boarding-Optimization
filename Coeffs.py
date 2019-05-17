@@ -68,6 +68,19 @@ def Errmoy(order,P,NCOL,NROW1,NROW2,NROW,Time):
         err[i]=Model.TotalBoardingTime(order[i],P[i],NCOL[i],NROW1[i],NROW2[i],NROW[i])/60-Time[i]
     return np.sum(np.abs(err))/N
 
+def ErrBoarding(order,P,NCOL,NROW1,NROW2,NROW,Time,BTime,weight):
+    N=int(len(order)/6)
+    Err=np.zeros(N)
+    for i in range(N):
+        T=np.zeros(6)
+        for j in range(6):
+            T[j]=Model.TotalBoardingTime(order[j+6*i],P[j+6*i],NCOL[j+6*i],NROW1[j+6*i],NROW2[j+6*i],NROW[j+6*i])/60
+        if (np.sum(weight)==0):
+            weight[np.argmax(T)]=1
+        Err[i]=np.abs(BTime[i]-np.dot(weight,T))
+#        Err[i]=np.abs(BTime[i]-np.max(T))
+    return Err
+
 def Norme(err):
     return np.sqrt(np.sum(err**2))
 
