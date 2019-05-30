@@ -175,6 +175,7 @@ def weight_finder():
     Time=np.matrix(Time)
     k=0
     for i in range(2,87):
+#We choose the only flights which have the good format
         if (i!=18 and i!=3 and i!=6 and i!=7 and i!=10 and i!=11 and i!=14 and i!=15 and i!=19 and i!=21 and i!=23 and i!=27 and i!=30 and i!=31 and i!=33 and i!=35 and i!=39 and i!=43 and i!=47 and i!=51 and i!=55 and i!=57 and i!=59 and i!=60 and i!=63 and i!=67 and i!=71 and i!=73 and i!=75 and i!=79 and i!=83 and i!=86):
             Time_temp,BTime_temp=Data_translater('Boarding.xlsx','Vol n°'+str(i),np.zeros(6),False)[-2:]
             Time=np.concatenate((Time,np.matrix(Time_temp)),axis=0)
@@ -229,77 +230,4 @@ ORDER,P,NC,NR1,NR2,NR,Time,BTime=Data_translater('Boarding.xlsx','Vol n°38',np.
 #print(Coeffs.Errmoy(ORDER,P,NC,NR1,NR2,NR,Time))
 #Coeffs.Find_coeff([order6],[P6],[NC6],[NR16],[NR26],[NR6],[fin6-deb6])
 #o=Model.Metropolis(order2,P2,NC2,NR12,NR22,NR2,10000,40)
-#order2=[]
-#deb=0
-#fin=0
-#for rownum in range(sh.nrows):
-#    col=(ord(sh.row_values(rownum)[3][0])-48)*10+ord(sh.row_values(rownum)[3][1])-48
-#    row=ord(sh.row_values(rownum)[3][2])-65
-#    if (col>9) and (col<28) and (row>5) and (rownum>16) and (rownum<389):
-#        if (deb==0):
-#            deb=sh.row_values(rownum)[1]
-#        p=(27-col)*5+row-5-1*(row>8)
-#        order+=[p]
-#        fin=sh.row_values(rownum)[1]
-#print(order)
-#print(fin-deb)
-#
-#order=[]
-#deb=0
-#fin=0
-#for rownum in range(sh.nrows):
-#    col=(ord(sh.row_values(rownum)[3][0])-48)*10+ord(sh.row_values(rownum)[3][1])-48
-#    row=ord(sh.row_values(rownum)[3][2])-65
-#    if (col>28) and (col<45) and (row<6) and (rownum>16) and (rownum<389):
-#        if (deb==0):
-#            deb=sh.row_values(rownum)[1]
-#        p=(44-col)*5+row-1*(row>3)+1
-#        order+=[p]
-#        fin=sh.row_values(rownum)[1]
-#print(order)
-#print(fin-deb)
-#
-#order=[]
-#deb=0
-#fin=0
-#for rownum in range(sh.nrows):
-#    col=(ord(sh.row_values(rownum)[3][0])-48)*10+ord(sh.row_values(rownum)[3][1])-48
-#    row=ord(sh.row_values(rownum)[3][2])-65
-#    if (col>28) and (col<45) and (row>5) and (rownum>16) and (rownum<389):
-#        if (deb==0):
-#            deb=sh.row_values(rownum)[1]
-#        p=(44-col)*5+row-5-1*(row>8)
-#        order+=[p]
-#        fin=sh.row_values(rownum)[1]
-#print(order)
-#print(fin-deb)
-#
-#order=[]
-#deb=0
-#fin=0
-#for rownum in range(sh.nrows):
-#    col=(ord(sh.row_values(rownum)[3][0])-48)*10+ord(sh.row_values(rownum)[3][1])-48
-#    row=ord(sh.row_values(rownum)[3][2])-65
-#    if (col>45) and (col<59) and (row<6) and (rownum>16) and (rownum<389):
-#        if (deb==0):
-#            deb=sh.row_values(rownum)[1]
-#        p=(58-col)*5+row-1*(row>3)+1
-#        order+=[p]
-#        fin=sh.row_values(rownum)[1]
-#print(order)
-#print(fin-deb)
-#
-#order=[]
-#deb=0
-#fin=0
-#for rownum in range(sh.nrows):
-#    col=(ord(sh.row_values(rownum)[3][0])-48)*10+ord(sh.row_values(rownum)[3][1])-48
-#    row=ord(sh.row_values(rownum)[3][2])-65
-#    if (col>45) and (col<59) and (row>5) and (rownum>16) and (rownum<389):
-#        if (deb==0):
-#            deb=sh.row_values(rownum)[1]
-#        p=(58-col)*5+row-5-1*(row>8)
-#        order+=[p]
-#        fin=sh.row_values(rownum)[1]
-#print(order)
-#print(fin-deb)
+

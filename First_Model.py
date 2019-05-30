@@ -29,7 +29,6 @@ def Checkorder(order):
     NROW1=int(NROW/2)
     for i in range(n):
         Vecorder[order[i]-1]=i+1
-#    Matorder=np.reshape(Vecorder,[NCOL,NROW]).T
     Matorder=np.reshape(Vecorder,[NCOL,NROW]).T
     Output=np.zeros([NROW+1,NCOL])
     Output[:NROW1,:]=Matorder[:NROW1,:]
@@ -37,27 +36,10 @@ def Checkorder(order):
     plt.matshow(Output.T,cmap="YlOrBr")
     plt.colorbar()
     plt.show()
-#    plt.matshow(Matorder,cmap="YlOrBr")
-#    plt.colorbar()
-#    plt.show()
+
     pass
 
-#def Zbeul(order):
-#    n=len(order)
-#    Vecorder=np.zeros(n)
-#    NROW1=int(NROW/2)
-#    for i in range(n):
-#        Vecorder[order[i]-1]=i+1
-##    Matorder=np.reshape(Vecorder,[NCOL,NROW]).T
-#    Matorder=np.reshape(Vecorder,[NCOL,NROW]).T
-#    Matorder=np.floor((Matorder-1)/4)
-#    Output=np.zeros([NROW+1,NCOL])
-#    Output[:NROW1,:]=Matorder[:NROW1,:]
-#    Output[NROW1+1:,:]=Matorder[NROW1:,:]
-#    plt.matshow(Output.T,cmap="YlOrBr")
-#    plt.colorbar()
-#    plt.show()
-#    pass
+
 
 def randomorder():
     N=NCOL*NROW

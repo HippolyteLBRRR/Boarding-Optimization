@@ -24,19 +24,21 @@ TWait=8
 TRow=2
 TInt=2
 
-TWalk=3
-TFollow=24.5
-TLug=19
-TWait=6
-TRow=2
-TInt=2
-
+#TWalk=3
+#TFollow=24.5
+#TLug=19
+#TWait=6
+#TRow=2
+#TInt=2
+#
 TWalk=1
 TFollow=23.5
 TLug=23
 TWait=7
 TRow=2
 TInt=2
+
+
 ##Checkorder displays a graph based on the order which is the parameter.
 ##Good way to visualize how the boarding occurs
 def Checkorder(order,NCOL,NROW1,NROW2,NROW):
@@ -48,6 +50,7 @@ def Checkorder(order,NCOL,NROW1,NROW2,NROW):
     Output=np.zeros([NROW+1,NCOL])
     Output[:NROW1,:]=Matorder[:NROW1,:]
     Output[NROW1+1:,:]=Matorder[NROW1:,:]
+#    plt.matshow(np.flip(Output.T,axis=0),cmap="YlOrBr")
     plt.matshow(Output,cmap="YlOrBr")
     plt.colorbar()
     plt.show()
@@ -238,15 +241,4 @@ def Metropolis(order,P,NCOL,NROW1,NROW2,NROW,nT,h):
     print(TotalBoardingTime(ordermin,P,NCOL,NROW1,NROW2,NROW))
     return ordermin
 
-#P=np.zeros([NROW,NCOL])
-#r=np.ravel(np.matrix(order,int))
-#Checkorder(r)
-#print(TotalBoardingTime(r,P))
-#
-#N=50000
-#F=np.zeros(N-1)
-#r=Metropolis(Boeing,N,20)
-#plt.plot(F)
-#r=Outsidein()
-#Checkorder(r)
-#print(TotalBoardingTime(r))
+
